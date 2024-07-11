@@ -1,0 +1,32 @@
+function y = Minimum(f,a0,b0,x,p,epsilon)
+    a=a0;b=b0; 
+    lambda=a+0.382*(b-a); 
+    mu=a+0.618*(b-a);%设定初始值 
+    y1=f(x+lambda*p);
+    y2=f(x+mu*p);%初始函数值 
+    k=1;y=0; 
+    while(k<=10000)
+        if(y1>y2) 
+            if(b-lambda<=epsilon) 
+                y=mu; 
+                break; 
+            end
+            a=lambda; 
+            lambda=mu; 
+            y1=f(x+lambda*p); 
+            mu=a+0.618*(b-a); 
+            y2=f(x+mu*p); 
+        else
+            if(mu-a<=epsilon)
+                y=lambda; 
+                break; 
+            end
+            b=mu;
+            mu=lambda;
+            y2=f(x+mu*p); 
+            lambda=a+0.382*(b-a); 
+            y1=f(x+lambda*p); 
+        end
+        k=k+1; 
+    end
+end

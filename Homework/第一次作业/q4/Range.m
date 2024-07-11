@@ -1,0 +1,33 @@
+function [a,b] =Range(f,a0,h0,x,p)
+    t=2;k=0;ak=a0;yk=f(x+ak*p);h=h0;ak1=0;yk1=0;alpha=0;
+    while(0<=k)
+        ak1=ak+h; 
+        if(ak1<0) 
+            ak1=0; 
+            break;%小于0即越出区域，结束 
+        end
+        yk1=f(x+ak1*p); 
+        if(yk1<=yk)
+            h=t*h; 
+            alpha=ak; 
+            ak=ak1; 
+            yk=yk1; 
+            k=k+1; 
+        else
+            if k==0
+                h=-h; 
+                ak=ak1; 
+                yk=f(x+ak*p);%转换搜索方向 
+            else
+                break; 
+            end
+        end
+    end
+    if(alpha<ak1) 
+        a=alpha;
+        b=ak1; 
+    else
+        a=ak1;
+        b=alpha; 
+    end
+end

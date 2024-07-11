@@ -1,0 +1,390 @@
+\documentclass{article}
+\usepackage{algorithm} 
+\usepackage{fancyhdr}
+\usepackage[toc,page]{appendix}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{extarrows}
+\usepackage{mathrsfs}
+\usepackage{Ctex}
+\usepackage{dsfont}
+\usepackage[hidelinks]{hyperref}
+\usepackage{apacite}
+\usepackage{multirow, booktabs}  
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{longtable}
+\usepackage{threeparttablex}
+\usepackage{tabu}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{changepage}
+\usepackage{mathtools}
+\usepackage{listings}
+
+\usetikzlibrary{automata,positioning}
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+\setlength{\parindent}{0em}
+\linespread{1.1}
+
+\pagestyle{myheadings}
+\markboth{HW Solution}{Shengze Xu}
+\chead{\hmwkClass\ : \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+\newcommand{\hmwkTitle}{第五次作业}
+\newcommand{\hmwkDueDate}{\today}
+\newcommand{\hmwkClass}{优化实用算法}
+\newcommand{\hmwkClassInstructor}{指导老师：徐翔}
+\newcommand{\hmwkAuthorName}{徐圣泽 3190102721}
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{\hmwkDueDate }\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ }}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+% Various Helper Commands
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\lstset{
+	basicstyle=\tt,%行号
+	numbers=left,
+	rulesepcolor=\color{red!20!green!20!blue!20},
+	escapeinside=``,
+	xleftmargin=2em,xrightmargin=2em, aboveskip=1em,%背景框
+	framexleftmargin=1.5mm,
+	frame=shadowbox,%背景色
+	backgroundcolor=\color[RGB]{245,245,244},%样式
+	keywordstyle=\color{blue}\bfseries,
+	identifierstyle=\bf,
+	numberstyle=\color[RGB]{0,192,192},
+	commentstyle=\it\color[RGB]{96,96,96},
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},%显示空格
+	showstringspaces=false
+}
+
+\begin{document}
+\lstset{language=MATLAB}
+\maketitle
+	
+\pagebreak
+
+\begin{homeworkProblem}
+\textbf{1. Let $r_1(x)=x_2-x_1^2$, $r_2(x)=1-x_2$, $r(x)=(r_1(x),r_2(x))^T$, $f(x)=\frac{1}{2}[r_1(x)^2+r_2(x)^2]=\frac{1}{2}r(x)^Tr(x)$. It is known that the solution to min $f(x)$ is $x^{\star}=(1,1)^T$.}
+
+\textbf{(a) For any initial guess x0, give the Newton algorithm of}
+$$
+\left\{
+\begin{aligned}
+&x_{k+1}=x_k+\alpha_kp_k,\\
+&p_k=-[\nabla^2f(x)]\nabla f(x),\\
+&\alpha_k:f(x_k+\alpha_kp_k)=\min f(x+\alpha p_k).
+\end{aligned}
+\right.
+$$
+\textbf{(b) Try to prove when $x\to x^{\star}$,}
+$$
+\nabla^2 f(x)\to \nabla r(x) \nabla r(x)^T.
+$$
+
+\textbf{解：}
+
+（a）记$J(x)=\nabla r(x)^T=(\nabla r_1(x),\nabla r_2(x))^T$，则函数$f(x)$的梯度为$\nabla f(x)=r_1(x)\nabla r_1(x)+r_2(x)\nabla r_2(x)=J(x)^Tr(x)$，对应的$Hesse$矩阵为$\nabla^2 f(x)=\nabla r_1(x)\nabla r_1(x)^T+\nabla r_2(x)\nabla r_2(x)^T+r_1(x)\nabla^2r_1(x)+r_2(x)\nabla^2r_2(x)=J(x)^TJ(x)+S(x)$。
+
+其中$$
+\nabla^2r_1(x)=\left(                
+\begin{array}{cc}   
+	-2 & 0\\  
+	0 & 0 \\  
+\end{array}
+\right) ,
+\nabla^2r_2(x)=\left(                
+\begin{array}{cc}   
+	0 & 0\\  
+	0 & 0 \\  
+\end{array}
+\right),
+S(x)=\left(                
+\begin{array}{cc}   
+	-2r_1(x) & 0\\  
+	0& 0 \\  
+\end{array}
+\right)
+$$
+
+该问题需要给出牛顿法，与第一次作业的算法要求基本一致，下面进行编程求解。
+
+首先写出函数及其梯度和$Hesse$矩阵。
+\begin{lstlisting}
+function y=f(x)
+r=[x(2)-x(1)^2;1-x(2)]; 
+y=r'*r/2;
+end 
+\end{lstlisting}
+\begin{lstlisting}
+function y=Gradf(x) 
+r=[x(2)-x(1)^2;1-x(2)]; 
+J=[-2*x(1),1;0,-1]; 
+y=J'*r;
+end 
+\end{lstlisting}
+\begin{lstlisting}
+function y=Hessef(x) 
+J=[-2*x(1),1;0,-1]; 
+y=J'*J+[-2*(x(2)-x(1)^2),0;0,0];
+end
+\end{lstlisting}
+
+下面我们首先根据书本57至58页的算法编写了利用进退法进行一维搜索确定区间的函数：
+\begin{lstlisting}
+function [a,b]=Range(f,a0,h0,x,p)
+t=2;k=0;ak=a0;yk=f(x+ak*p);h=h0;ak1=0;yk1=0;alpha=0;
+while(0<=k)
+	ak1=ak+h; 
+	if(ak1<0) 
+		ak1=0; 
+		break;
+	end
+	yk1=f(x+ak1*p); 
+	if(yk1<=yk)
+		h=t*h; alpha=ak; ak=ak1; yk=yk1; k=k+1; 
+	else
+		if k==0
+			h=-h; ak=ak1; yk=f(x+ak*p);
+		else
+			break; 
+		end
+	end
+end
+if(alpha<ak1) 
+	a=alpha;
+	b=ak1; 
+else
+	a=ak1;
+	b=alpha; 
+end
+end
+\end{lstlisting}
+下面利用0.618法进行精确一维搜索：
+\begin{lstlisting}
+function y = Minimum(f,a0,b0,x,p,epsilon)
+a=a0;b=b0; 
+lambda=a+0.382*(b-a);mu=a+0.618*(b-a);
+y1=f(x+lambda*p);y2=f(x+mu*p);
+k=1;y=0; 
+while(k<=10000)
+	if(y1>y2) 
+		if(b-lambda<=epsilon) 
+			y=mu; 
+			break; 
+		end
+		a=lambda; lambda=mu; 
+		y1=f(x+lambda*p); 
+		mu=a+0.618*(b-a); 
+		y2=f(x+mu*p); 
+	else
+		if(mu-a<=epsilon)
+			y=lambda; 
+			break; 
+		end
+		b=mu;mu=lambda;
+		y2=f(x+mu*p);
+		lambda=a+0.382*(b-a); 
+		y1=f(x+lambda*p); 
+	end
+	k=k+1; 
+end
+end
+\end{lstlisting}
+下面是带线搜索牛顿法的函数：
+\begin{lstlisting}
+function [x,k]=NewtonsLineSearch(f,Gradf,Hessef,x0,epsilon1,epsilon2)
+k=0;x=x0;
+while(k>=0) 
+	if(sqrt((Gradf(x))'*Gradf(x))<=epsilon1)
+		break; 
+	end
+	p=-inv(Hessef(x))*Gradf(x); 
+	a0=2;h0=0.5;
+	[a,b] = Range(f,a0,h0,x,p);
+	x=x+Minimum(f,a,b,x,p,epsilon2)*p; 
+	k=k+1; 
+end
+end
+\end{lstlisting}
+
+下面是主程序的代码：
+\begin{lstlisting}
+x0=unifrnd(-1000,1000,2,1); 
+epsilon=10^(-12);
+[x,k] = NewtonsLineSearch(@f,@Gradf,@Hessef,x0,epsilon,epsilon);
+\end{lstlisting}
+
+下面是三次随机选取初值后运行的结果：
+\begin{lstlisting}
+随机选定的初值：
+600.5609
+-716.2273
+
+带线搜索牛顿法得到的函数极小值点：
+-1.0000
+1.0000
+
+带线搜索牛顿法得到的函数极小值：
+2.4850e-26
+\end{lstlisting}
+\begin{lstlisting}
+随机选定的初值：
+389.6572
+-365.8010
+
+带线搜索牛顿法得到的函数极小值点：
+-1
+1
+
+带线搜索牛顿法得到的函数极小值：
+0
+
+迭代次数为：
+12
+\end{lstlisting}
+\begin{lstlisting}
+随机选定的初值：
+-446.1540
+-907.6572
+
+带线搜索牛顿法得到的函数极小值点：
+1.0000
+1.0000
+
+带线搜索牛顿法得到的函数极小值：
+8.4926e-30
+
+迭代次数为：
+12
+\end{lstlisting}
+
+上面的运行结果说明$x^{\star}=(1,1)^T$和$x^{\star}=(-1,1)^T$均为$f(x)$的全局最小值点，此时$r_1(x^{\star})=r_2(x^{\star})=f(x^{\star})=0$，故本方法在给定初值不同的情况下给出的极小值点可能不同。
+
+（b）由（a）知，$r_1(x^{\star})=r_2(x^{\star})=0$，且$r_i(x^{\star}),i=1,2$关于$x$连续，故$x\to 0$时$r(x)\to 0$，则有
+$$
+\nabla^2 f(x)=J(x)^TJ(x)+S(x)=J(x)^TJ(x)+\left(                
+\begin{array}{cc}   
+	-2r_1(x) & 0\\  
+	0& 0 \\  
+\end{array}
+\right)\to J(x)^TJ(x)
+$$
+
+则有$\nabla^2 f(x)\to \nabla r(x)\nabla r(x)^T$，即证。
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\textbf{2. Let $x_1$, $x_2$ are solutions to $(A^TA+\mu_iI)x=-A^Tr,i=1,2$ with respect to $\mu_1$ and $\mu_2$, where $\mu_1>\mu_2>0,A\in R^{m\times n},r\in R^m$. Try to prove $\|Ax_2+r\|_2^2<\|Ax_1+r\|_2^2$.}
+
+\textbf{解：}对$A^TA$应用$SVD$分解，则有正交矩阵$Q$和对角化矩阵$\Lambda$，使得$A^TA=Q\Lambda Q^T$，其中$Q=(q_1,q_2,\cdots,q_n)\in R^{n\times n}$，$\Lambda=diag(\lambda_1,\lambda_2,\cdots,\lambda_n)\in R^{n\times n}$。
+
+根据第四次作业第三道题目的结论，我们有
+$$
+x(\mu_i)=-\sum_{k=1}^{n}\frac{q_k^TA^Tr}{\mu_i+\lambda_k}q_k
+$$
+
+因此有$\|Ax_i+r\|_2^2=(Ax_i+r)^T(Ax_i+r)=x_i^TA^TAx_i+x_i^TA^Tr+r^TAx_i+r^Tr$。
+$$
+\begin{aligned}
+x_i^TA^TAx_i&=(\sum_{k=1}^{n}\frac{q_k^TA^Tr}{\mu_i+\lambda_k}q_k^T)A^TA(\sum_{k=1}^{n}\frac{q_k^TA^Tr}{\mu_i+\lambda_k}q_k)\\
+&=\sum_{l=1}^n\sum_{k=1}^n(\frac{q_k^TA^Tr}{\mu_i+\lambda_k})q_k^TA^TAq_l(\frac{q_l^TA^Tr}{\mu_i+\lambda_l})
+\end{aligned}
+$$
+
+易知其中$$q_k^TA^TAq_l=\left\{
+\begin{aligned}
+	\lambda_j,&\quad k=l=\lambda_j\\
+	0,&\quad k\neq l
+\end{aligned}
+\right.
+$$
+
+因此$x_i^TA^TAx_i=\sum_{k=1}^n(\frac{q^TA^Tr}{\mu_i+\lambda_k})^2\lambda_k$，$x_i^TA^Tr=(r^TAx_i)^T=r_TAx_i=-\sum_{k=1}^n\frac{(r^TAq_k)(q_k^TA^Tr)}{\mu_i+\lambda_k}$，
+
+故$\|Ax_i+r\|_2^2=\sum_{k=1}^{n}[\frac{\lambda_k(q_k^TA^Tr)^2}{(\mu_i+\lambda_k)^2}-\frac{2(q_k^TA^Tr)^2}{\mu_i+\lambda_k}]+r^Tr$。
+
+对$\mu_i$求导，有
+$$
+\begin{aligned}
+\frac{d}{d\mu_i}[\frac{\lambda_k(q_k^TA^Tr)^2}{(\mu_i+\lambda_k)^2}-\frac{2(q_k^TA^Tr)^2}{\mu_i+\lambda_k}]&=(q_k^TA^Tr)^2[\frac{-2\lambda_k}{(\mu_i+\lambda_k)^3}+\frac{2}{(\mu_i+\lambda_k)^2}]\\
+&=(q_k^TA^Tr)^2\frac{2\mu_i}{(\mu_i+\lambda_k)^3}>0
+\end{aligned}
+$$
+
+因此$\|Ax(\mu_i)+r\|_2^2$随$\mu_i$的增大而增大，因此有$\|Ax_2+r\|_2^2<\|Ax_1+r\|_2^2$。
+\end{homeworkProblem}
+
+\end{document}

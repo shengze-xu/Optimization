@@ -1,0 +1,302 @@
+\documentclass{article}
+\usepackage{algorithm} 
+\usepackage{fancyhdr}
+\usepackage[toc,page]{appendix}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage{algpseudocode}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{extarrows}
+\usepackage{mathrsfs}
+\usepackage{Ctex}
+\usepackage{dsfont}
+\usepackage[hidelinks]{hyperref}
+\usepackage{apacite}
+\usepackage{multirow, booktabs}  
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{longtable}
+\usepackage{threeparttablex}
+\usepackage{tabu}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{changepage}
+\usepackage{mathtools}
+\usepackage{listings}
+
+\usetikzlibrary{automata,positioning}
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+\setlength{\parindent}{0em}
+\linespread{1.1}
+
+\pagestyle{myheadings}
+\markboth{HW Solution}{Shengze Xu}
+\chead{\hmwkClass\ : \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+\newcommand{\hmwkTitle}{第四次作业}
+\newcommand{\hmwkDueDate}{\today}
+\newcommand{\hmwkClass}{优化实用算法}
+\newcommand{\hmwkClassInstructor}{指导老师：徐翔}
+\newcommand{\hmwkAuthorName}{徐圣泽 3190102721}
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{\hmwkDueDate }\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ }}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+% Various Helper Commands
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\lstset{
+	basicstyle=\tt,%行号
+	numbers=left,
+	rulesepcolor=\color{red!20!green!20!blue!20},
+	escapeinside=``,
+	xleftmargin=2em,xrightmargin=2em, aboveskip=1em,%背景框
+	framexleftmargin=1.5mm,
+	frame=shadowbox,%背景色
+	backgroundcolor=\color[RGB]{245,245,244},%样式
+	keywordstyle=\color{blue}\bfseries,
+	identifierstyle=\bf,
+	numberstyle=\color[RGB]{0,192,192},
+	commentstyle=\it\color[RGB]{96,96,96},
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},%显示空格
+	showstringspaces=false
+}
+
+\begin{document}
+\lstset{language=MATLAB}
+\maketitle
+	
+\pagebreak
+
+\begin{homeworkProblem}
+\textbf{1. Let $B_k\in R^{n\times n}$ symmetric positive definite. $p_k$ solves min $q_k(p)=\frac{1}{2}p^TB_kp+\nabla f(x_k)^Tp+f(x_k)$. Try to prove $p_k$ is a decent direction of $f$ at $x_k$.}
+
+\textbf{解：}根据条件我们有
+$$
+B_k^Tp_k+\nabla f(x_k)=0
+$$
+
+其中$B_k$可逆，故可以解得$p_k=-B_k^{-1}\nabla f(x_k)$
+
+代入下式得到
+$$
+\begin{aligned}
+f(x_k+\alpha p_k)&=f(x_k)+\alpha \nabla f(x_k)^Tp_k+\alpha o(\|p_k\|)\\
+&=f(x_k)+\alpha\nabla f(x_k)^T(-B_k^{-1}\nabla f(x_k))+\alpha o(\|p_k\|)\\
+&=f(x_k)-\alpha\nabla f(x_k)^TB_k^{-1}\nabla f(x_k)+\alpha o(\|p_k\|)
+\end{aligned}
+$$
+
+因此有
+$$
+f(x_k+\alpha p_k)-f(x_k)=-\alpha\nabla f(x_k)^TB_k^{-1}\nabla f(x_k)+\alpha o(\|p_k\|)
+$$
+
+上式中$\nabla f(x_k)^TB_k^{-1}\nabla f(x_k)>0$，$B_k^{-1}$是对称正定矩阵，则当$\alpha\to 0$时，$f(x_k+\alpha p_k)-f(x_k)<0$，因此$p_k$是$f$在$x_k$的下降方向。
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\textbf{2. Let $q_k(p)=\frac{1}{2}p^TB_kp+\nabla f(x_k)^Tp+f(x_k)$. Try to prove the Cauchy point is the minimizer of $q_k(p)$ along $\nabla f(x)$}
+$$
+p_k^C=-\tau_k\frac{\Delta_k}{\|\nabla f(x_k)\|}\nabla f(x_k)
+$$
+
+\textbf{where}
+$$
+\tau_k=\left\{
+\begin{aligned}
+	1,\quad \text{if } \nabla f(x_k)^TB_k\nabla f(x_k)\leq 0\\
+	\min\{\|\nabla f(x_k)\|^3/(\nabla f(x_k)^TB_k\nabla f(x_k)),1\},\quad \text{otherwise.}
+\end{aligned}
+\right.
+$$
+\textbf{解：}取$p_k^s=-\frac{\Delta_k}{\|\nabla f(x_k)\|}\nabla f(x_k)$，则有$q_k(\tau p_k^s)=\frac{1}{2}\tau^2{p_k^s}^TB_kp_k^s+\tau \nabla f(x_k)^Tp_k^s+f(x_k)$。
+
+下面分情况进行讨论。
+
+（1）如果$\nabla f(x_k)^TB_k\nabla f(x_k)\leq0$，由函数图像可知，在$\tau>0$时随$\tau_k$增大，$q_k(\tau_k p_k^s)$的值减小，因此$\tau_k$取不超过信赖域范围内最大值$1$时，$q(p_k^c)$取最小值。
+
+（2）如果$\nabla f(x_k)^TB_k\nabla f(x_k)>0$，则$\tau_0=-\frac{\nabla f(x_k)^Tp_k^s}{{p_k^s}^TB_kp_k^s}$是$q_k(\tau p_k^s)$关于$\tau$的最小值点。
+
+（i）当$p_k^c$在信赖域范围内时，$\tau_0\leq 1$，此时$\tau_k=\tau_0$就是我们需要的值。化简$\tau_0$可知，此时有$$\tau_k=\frac{\|\nabla f(x_k)\|^3}{\Delta_k\nabla f(x_k)^TB_k\nabla f(x_k)}$$
+
+（ii）当$p_k^c$在信赖域范围内时，$\tau_0> 1$，此时根据函数图像可知$q_k(\tau p_k^s)$在$\tau\in[0,\tau_0]$范围内下降，又$\tau\in[0,1]$，故$\tau_k$取$1$时是我们的目标点。
+
+综上所述，$\tau_k=\left\{
+\begin{aligned}
+	1,\quad \text{if } \nabla f(x_k)^TB_k\nabla f(x_k)\leq 0\\
+	\min\{\frac{\|\nabla f(x_k)\|^3}{\Delta_k\nabla f(x_k)^TB_k\nabla f(x_k)},1\},\quad \text{otherwise.}
+\end{aligned}
+\right.$，原命题得证。
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\textbf{3. If symmetric $B\in R^{n\times n}$ has factorization $B=Q\Lambda Q^T$ where $Q=(q_1,q_2,\cdots,q_n)$ is orthogonal, $\Lambda=diag(\lambda_1,\lambda_2,\cdots,\lambda_n)$. Try to prove}
+$$
+\left\{
+\begin{aligned}
+	(B+\lambda I)p & =  -g \\
+	\|p\| & =  \Delta \\
+\end{aligned}
+\right.
+$$
+
+\textbf{solution can be expressed by}
+$$
+p(\lambda)=-\sum_{i=1}^{n}\frac{q_i^Tg}{\lambda_i+\lambda}q_i.
+$$
+
+\textbf{Furthermore, try to prove}
+$$
+\frac{d}{d\lambda}(\|p(\lambda)\|^2)=-2\sum_{i=1}^{n}\frac{(q_i^Tg)^2}{(\lambda_i+\lambda)^3}
+$$
+\textbf{解：}我们将$p(\lambda)=-\sum_{i=1}^{n}\frac{q_i^Tg}{\lambda_i+\lambda}q_i$代入$(B+\lambda I)p=-g$后得到
+$$
+\begin{aligned}
+(B+\lambda I)p&=\sum_{i=1}^n(\lambda_i q_i q_i^T+\lambda e_ie_i^T)(-\sum_{i=1}^{n}\frac{q_i^Tg}{\lambda_i+\lambda}q_i)\\
+&=-\sum_{i=1}^n(\lambda_i q_i q_i^T+\lambda e_ie_i^T)\sum_{i=1}^{n}\frac{q_i^Tg}{\lambda_i+\lambda}q_i\\
+&=-(\sum_{i=1}^{n}\frac{\lambda_iq_iq_i^Tq_iq_i^Tg}{\lambda_i+\lambda}+\lambda E \sum_{i=1}^{n}\frac{q_iq_i^Tg}{\lambda_i+\lambda})\\
+&=-(\sum_{i=1}^n\frac{\lambda_iq_iq_i^Tg}{\lambda_i+\lambda}+\lambda\sum_{i=1}^n\frac{q_iq_i^Tg}{\lambda_i+\lambda})\\
+&=-\sum_{i=1}^{n}q_iq_i^Tg\\
+&=-QEQ^Tg=-g
+\end{aligned}
+$$
+
+因为上述过程是可逆的，则说明$p(\lambda)=-\sum_{i=1}^{n}\frac{q_i^Tg}{\lambda_i+\lambda}q_i$是方程组的解，这里我们并未用到$\|p\| = \Delta$的条件。
+
+进一步地，有
+$$
+\begin{aligned}
+\|p(\lambda)\|^2&=p(\lambda)^T\cdot p(\lambda)\\
+&=\sum_{i=1}^{n}\frac{q_i^Tg}{\lambda_i+\lambda}q_i^T\cdot \sum_{i=j}^{n}\frac{q_j^Tg}{\lambda_j+\lambda}q_j^T\\
+&=\sum_{i,j}\frac{(q_i^Tg)(q_j^Tg)}{(\lambda_i+\lambda)(\lambda_j+\lambda)}\delta_{i,j}\\
+\end{aligned}
+$$
+其中
+$$\delta_{i,j}=\left\{
+\begin{aligned}
+	1,&\quad i=j\\
+	0,&\quad i\neq j
+\end{aligned}
+\right.
+$$
+因此有
+$$
+\|p(\lambda)\|^2=\sum_{i=1}^{n}\frac{(q_i^Tg)^2}{(\lambda_i+\lambda)^2}
+$$
+求导得到$$\frac{d}{d\lambda}(\|p(\lambda)\|^2)=-2\sum_{i=1}^{n}\frac{(q_i^Tg)^2}{(\lambda_i+\lambda)^3}$$
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\textbf{4. Let $p_k=\arg\min\{m_k(p):\|p\|\leq\Delta_k,s\in {span}[g_k,B_k^{-1}g_k]\}$, where $m_k(p)=f(x_k)+g_k^Tp+\frac{1}{2}p^TB_kp$, $B_k$ is symmetric positive. Try to find the explicit solution $p_k$.}
+
+\textbf{解：}
+
+如果$p_B=-B_k^{-1}g_k$并且$\|p_B\|\leq\Delta_k$，则$p_k=p_B=-B_k^{-1}g_k$。
+
+如果$\|p_B\|>\Delta_k$，令$p=p^U+(1-\tau)(p^U-p^B)$，$\tau\in[1,2]$，其中
+$$
+p^U=-\frac{g_k^Tg_k}{g_k^TB_kg_k}g_k
+$$
+
+因此$p(\tau)=-\frac{g_k^Tg_k}{g_k^TB_kg_k}g_k+(1-\tau)(B_k^{-1}g_k-\frac{g_k^Tg_k}{g_k^TB_kg_k}g_k)$，显然$\|p^U+(1-\tau)(p^U-p^B)\|$随$\|(1-\tau)(p^U-p^B)\|$增大而增大。
+
+当$\tau\in[1,2]$增大时，$\|p\|=\|p^U+(1-\tau)(p^U-p^B)\|$增大，下面证明$m_k(p(\tau))$随$\tau$增大而减小。
+
+$$
+\begin{aligned}
+m_k(p(\tau))&=m_k(p^U+(1-\tau)(p^U-p^B))\\
+&=f+g^Tp+\frac{1}{2}p^TBp\\
+&=f+g^Tp^U+(\tau-1)[g^T(p^B-p^U)+\frac{1}{2}{p^U}^TB(p^B-p^U)\\
+&\quad+\frac{1}{2}(p^B-p^U)^TBp^U)+(\tau-1)^2\frac{1}{2}(p^B-p^U)^TB(p^B-p^U)]\\
+\end{aligned}
+$$
+
+令$$\tau_0=\frac{g^T(p^B-p^U)+\frac{1}{2}{p^U}^TB(p^B-p^U)+\frac{1}{2}(p^B-p^U)^TBp^U}{(p^B-p^U)^TB(p^B-p^U)}$$
+
+则$m_k(p(\tau))$会在$\tau<\tau_0$时下降，在$\tau>0$时增大。
+
+在无约束条件下，$\tilde{\tau}=2$（此时$p(\tilde{\tau})=p^B$）是全局最小值点，这说明$\tau_0=2=\tilde{\tau}$，故$\tau\in[1,2]$时$m_k(p(\tau))$随$\tau$增大而减小。
+
+在$\|p\|\leq\Delta_k,s\in {span}[g_k,B_k^{-1}g_k]$的约束条件下，$p_k$的显式解由$\|p^U+(1-\tau)(p^U-p^B)\|=\Delta_k^2$决定，这是因为$\tau\in[1,2]$时$\|p(\tau)\|$增大而$m(p(\tau))$减小。
+
+综上，有
+$$
+p_k=\left\{
+\begin{aligned}
+	-B_k^{-1}g_k,&\quad \|-B_k^{-1}g_k\|\leq\Delta_k\\
+	-\frac{g_k^Tg_k}{g_k^TB_kg_k}g_k,&\quad \|-B_k^{-1}g_k\|>\Delta_k
+\end{aligned}
+\right.
+$$
+\end{homeworkProblem}
+
+\end{document}
